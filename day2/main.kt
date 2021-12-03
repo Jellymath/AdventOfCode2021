@@ -25,11 +25,11 @@ fun firstPart(commands: List<Command>) {
     data class Total(val horizontal: Int = 0, val depth: Int = 0)
 
     val result =
-            commands.fold(Total()) { acc, current ->
-                when (current.direction) {
-                    Direction.forward -> acc.copy(horizontal = acc.horizontal + current.units)
-                    Direction.down -> acc.copy(depth = acc.depth + current.units)
-                    Direction.up -> acc.copy(depth = acc.depth - current.units)
+            commands.fold(Total()) { acc, (direction, units) ->
+                when (direction) {
+                    Direction.forward -> acc.copy(horizontal = acc.horizontal + units)
+                    Direction.down -> acc.copy(depth = acc.depth + units)
+                    Direction.up -> acc.copy(depth = acc.depth - units)
                 }
             }
     println(result.horizontal * result.depth)
@@ -38,15 +38,15 @@ fun firstPart(commands: List<Command>) {
 fun secondPart(commands: List<Command>) {
     data class Total(val horizontal: Int = 0, val depth: Int = 0, val aim: Int = 0)
     val result =
-            commands.fold(Total()) { acc, current ->
-                when (current.direction) {
+            commands.fold(Total()) { acc, (direction, units) ->
+                when (direction) {
                     Direction.forward ->
                             acc.copy(
-                                    horizontal = acc.horizontal + current.units,
-                                    depth = acc.depth + (acc.aim * current.units)
+                                    horizontal = acc.horizontal + units,
+                                    depth = acc.depth + (acc.aim * units)
                             )
-                    Direction.down -> acc.copy(aim = acc.aim + current.units)
-                    Direction.up -> acc.copy(aim = acc.aim - current.units)
+                    Direction.down -> acc.copy(aim = acc.aim + units)
+                    Direction.up -> acc.copy(aim = acc.aim - units)
                 }
             }
     println(result.horizontal * result.depth)
