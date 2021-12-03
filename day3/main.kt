@@ -12,8 +12,8 @@ fun firstPart(lines: List<String>) {
     val indices = lines.first().indices
     val countZero = indices.map(lines::zeroesAt)
     val countOne = indices.map(lines::onesAt)
-    val modes = countZero.zip(countOne) { zeroes, ones -> if (ones >= zeroes) '1' else '0' }
-    val antiModes = countZero.zip(countOne) { zeroes, ones -> if (zeroes <= ones) '0' else '1' }
+    val modes = countZero.zip(countOne, ::mode)
+    val antiModes = countZero.zip(countOne, ::antiMode)
     val gammaRate = modes.binaryToInt()
     val epsilonRate = antiModes.binaryToInt()
     val powerConsumption = gammaRate * epsilonRate
@@ -22,25 +22,21 @@ fun firstPart(lines: List<String>) {
 
 fun secondPart(lines: List<String>) {
     fun List<String>.filterMode(i: Int): List<String> {
-        val mode = if (onesAt(i) >= zeroesAt(i)) '1' else '0'
+        val mode = mode(zeroesAt(i), onesAt(i))
         return filter { it[i] == mode }
     }
     fun List<String>.filterAntiMode(i: Int): List<String> {
-        val antiMode = if (zeroesAt(i) <= onesAt(i)) '0' else '1'
+        val antiMode = antiMode(zeroesAt(i), onesAt(i))
         return filter { it[i] == antiMode }
     }
-    val oxygenGeneratorRating =
-            generateSequence(lines to -1) { (input, i) -> input.filterMode(i + 1) to i + 1 }
+    fun trial(filterFun: List<String>.(Int) -> List<String>) =
+            generateSequence(lines to -1) { (input, i) -> input.filterFun(i + 1) to i + 1 }
                     .map { it.first }
                     .first { it.size == 1 }
                     .single()
                     .toInt(2)
-    val carbonDioxideScrubberRating =
-            generateSequence(lines to -1) { (input, i) -> input.filterAntiMode(i + 1) to i + 1 }
-                    .map { it.first }
-                    .first { it.size == 1 }
-                    .single()
-                    .toInt(2)
+    val oxygenGeneratorRating = trial(List<String>::filterMode)
+    val carbonDioxideScrubberRating = trial(List<String>::filterAntiMode)
     val lifeSupportRating = oxygenGeneratorRating * carbonDioxideScrubberRating
     println(lifeSupportRating)
 }
@@ -50,3 +46,7 @@ private fun List<Char>.binaryToInt() = joinToString("").toInt(2)
 private fun List<String>.zeroesAt(i: Int) = count { it[i] == '0' }
 
 private fun List<String>.onesAt(i: Int) = count { it[i] == '1' }
+
+private fun mode(zeroes: Int, ones: Int) = if (ones >= zeroes) '1' else '0'
+
+private fun antiMode(zeroes: Int, ones: Int) = if (zeroes <= ones) '0' else '1'
