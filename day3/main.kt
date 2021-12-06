@@ -1,3 +1,5 @@
+package day3
+
 import java.io.File
 
 // https://adventofcode.com/2021/day/3
