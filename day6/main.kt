@@ -11,6 +11,7 @@ fun main() {
 }
 
 fun firstPart(lanternfishTimers: List<Int>) {
+    // note: for day 80 it is fine to use state that accumulate fish count in Int, but as solutions otherwise are exactly the same I decided to reuse code anyway
     val lanternfishCount = lanternfishCountAt(lanternfishTimers, day = 80)
     println(lanternfishCount)
 }
